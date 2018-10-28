@@ -99,6 +99,17 @@ def assign_grade(github, title, grade):
     db.session.commit()
     print(f"Successfully added {github}'s grade for {title}")
 
+def add_project(title, description, max_grade):
+    """Creates new project in projects table in Hackbright database. Will print confirmation."""
+    QUERY = """
+        INSERT INTO projects (title, description, max_grade)
+            VALUES (:title,:description, :max_grade)
+            """
+    db.session.execute(QUERY,{'title': title,
+                                'description': description,
+                                'max_grade': max_grade})
+    print(f"Successfully added {title}.")
+
 
 def handle_input():
     """Main loop.
@@ -114,6 +125,7 @@ def handle_input():
         tokens = input_string.split()
         command = tokens[0]
         args = tokens[1:]
+        print(args)
 
         if command == "student":
             github = args[0]
@@ -134,6 +146,14 @@ def handle_input():
         elif command == "assign_grade":
             github, title, grade = args  # unpack!
             assign_grade(github, title, grade)
+
+        elif command == "add_project":
+            title = args[0]
+            project_desc = args[1:-1]
+            print(type(project_desc))
+            grade_max = args[-1]
+            add_project(title, project_desc, grade_max)
+
 
         else:
             if command != "quit":
